@@ -2,16 +2,8 @@ const RequestHelper = require('../helpers/request_helper.js');
 const PubSub = require('../helpers/pub_sub.js');
 
 const Questions = function () {
-  this.data = null;
+  this.data = [];
 };
-
-// Questions.prototype.bindEvents = function () {
-//   PubSub.subscribe('QuestionListView:form-submitted', (event) => {
-//     console.log(event.detail);
-//     const question = event.detail
-//     this.getData(question)
-//   });
-// };
 
 Questions.prototype.getData = function () {
   const url = `http://jservice.io/api/clues`;
@@ -28,5 +20,23 @@ Questions.prototype.getData = function () {
     console.error(err);
   })
 };
+
+Questions.prototype.bindEvents = function () {
+  PubSub.publish('Questions:data-ready', this.data);
+
+  PubSub.subscribe('SelectView:change', (evt) => {
+    console.log(evt.detail);
+    const selectedIndex = evt.detail;
+    this.publishQuestionDetail(selectedIndex);
+  });
+};
+
+Questions.prototype.publishQuestionDetail = function (selectedIndex) {
+  const selectedCategory = this.data[selectedIndex];
+
+
+  PubSub.publish('Questions:selected-question-ready', selectedCategory)
+};
+
 
 module.exports = Questions;

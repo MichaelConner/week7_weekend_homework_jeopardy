@@ -8,15 +8,15 @@ QuestionView.prototype.render = function () {
   const questionContainer = document.createElement('div');
   this.questionsContainer.appendChild(questionContainer);
 
-  const questionCategory = this.createElement('h3', this.question.category.title);
+  const questionCategory = this.createElement('h3', `Category: ${this.question.category.title}`);
   this.questionsContainer.appendChild(questionCategory);
 
-  const questionQuestion = this.createElement('h3', this.question.question);
+  const questionQuestion = this.createElement('h3', `Question: ${this.question.question}`);
   this.questionsContainer.appendChild(questionQuestion);
 
-  const questionAnswer = this.createElement('h3', this.question.answer);
+  const questionAnswer = this.createElement('h3', `Answer: ${this.question.answer}`);
   this.questionsContainer.appendChild(questionAnswer);
-  
+
 };
 
 QuestionView.prototype.createElement = function (elementType, text) {

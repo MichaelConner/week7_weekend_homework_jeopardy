@@ -1,22 +1,38 @@
 const PubSub = require('../helpers/pub_sub.js');
 const QuestionView = require('./question_view.js');
+const SelectView = require('./select_view.js');
+const RequestHelper = require('../helpers/request_helper.js')
 
 const QuestionsListView = function (container) {
   this.container = container;
 }
 
+let uniqueCategories;
+
 QuestionsListView.prototype.bindEvents = function () {
-  PubSub.subscribe('Questions:question-data-loaded', (evt) => {
-    console.log(evt);
-    this.question = evt.detail;
-    this.render();
+  let index;
+  let categories;
+
+  PubSub.subscribe('Questions:question-data-loaded', (event) => {
+    questions = event.detail
+    allCategories = questions.map(question => question.category.title)
+    uniqueCategories = Array.from(new Set(allCategories))
+  });
+
+  PubSub.subscribe('SelectView:change', (evt) => {
+    index = evt.detail;
+    this.render(questions, index);
   });
 };
 
-QuestionsListView.prototype.render = function () {
-  this.question.forEach((question) => {
-    const questionView = new QuestionView(this.container, question);
-    questionView.render();
+QuestionsListView.prototype.render = function (questions, index) {
+  this.container.innerHTML = '';
+
+  questions.forEach(question => {
+    if (question.category.title === uniqueCategories[index]) {
+    const selectedQuestion = new QuestionView(this.container, question);
+    selectedQuestion.render();
+    };
   });
 };
 
